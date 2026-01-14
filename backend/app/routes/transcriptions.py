@@ -29,10 +29,10 @@ async def create_transcription(
     # Parse date
     try:
         meeting_date = datetime.fromisoformat(date.replace('Z', '+00:00'))
-    except:
+    except (ValueError, AttributeError) as e:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Invalid date format"
+            detail=f"Invalid date format: {str(e)}"
         )
     
     # Create user-specific upload directory

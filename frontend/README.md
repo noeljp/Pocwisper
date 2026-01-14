@@ -10,8 +10,10 @@ npm install
 ```
 
 2. Configurer l'URL de l'API :
-Le frontend se connecte par défaut à `http://localhost:8000` pour l'API backend.
-Vous pouvez modifier cette URL dans `src/services/api.js` si nécessaire.
+```bash
+cp .env.example .env
+# Modifier VITE_API_URL si nécessaire (défaut: http://localhost:8000)
+```
 
 3. Lancer le serveur de développement :
 ```bash

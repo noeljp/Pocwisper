@@ -32,7 +32,12 @@ if [ -d ".git" ]; then
     git pull
 else
     echo "📥 Cloning repository..."
-    git clone https://github.com/noeljp/Pocwisper.git .
+    # Try HTTPS first, fall back to user instruction if it fails
+    if ! git clone https://github.com/noeljp/Pocwisper.git .; then
+        echo "⚠️  HTTPS clone failed. Please clone manually using SSH or provide credentials:"
+        echo "    git clone git@github.com:noeljp/Pocwisper.git $APP_DIR"
+        exit 1
+    fi
 fi
 
 # Setup backend environment

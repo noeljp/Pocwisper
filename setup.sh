@@ -65,11 +65,7 @@ sleep 10
 # Pull Ollama model
 echo ""
 echo "📥 Downloading Ollama llama2 model (this may take a while)..."
-if [ "$CONTAINER_CMD" = "podman" ]; then
-    $CONTAINER_CMD exec pocwisper-ollama ollama pull llama2
-else
-    $CONTAINER_CMD exec pocwisper-ollama ollama pull llama2
-fi
+$CONTAINER_CMD exec pocwisper-ollama ollama pull llama2
 
 echo ""
 echo "✅ Setup complete!"
