@@ -7,7 +7,7 @@ services:
       dockerfile: Dockerfile
     container_name: pocwisper-backend
     ports:
-      - "8000:8000"
+      - "${BACKEND_PORT:-8000}:8000"
     environment:
       - SECRET_KEY=change-this-in-production-to-a-secure-random-key
       - DATABASE_URL=sqlite:///./pocwisper.db
@@ -24,9 +24,11 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+      args:
+        - VITE_API_URL=http://localhost:${BACKEND_PORT:-8000}
     container_name: pocwisper-frontend
     ports:
-      - "3000:80"
+      - "${FRONTEND_PORT:-3000}:80"
     depends_on:
       - backend
 
@@ -34,7 +36,7 @@ services:
     image: ollama/ollama:latest
     container_name: pocwisper-ollama
     ports:
-      - "11434:11434"
+      - "${OLLAMA_PORT:-11434}:11434"
     volumes:
       - ollama-data:/root/.ollama
 

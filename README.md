@@ -68,6 +68,16 @@ chmod +x setup.sh
 ./setup.sh
 ```
 
+Le script créera automatiquement un fichier `.env` avec les ports par défaut (Frontend: 3000, Backend: 8000, Ollama: 11434).
+
+**Pour personnaliser les ports :** Éditez le fichier `.env` avant de lancer le script ou après l'installation :
+```bash
+# Dans le fichier .env
+FRONTEND_PORT=3010
+BACKEND_PORT=8010
+OLLAMA_PORT=11434
+```
+
 Le script vous demandera si vous souhaitez utiliser Ollama dans un container ou une instance existante.
 
 **Option 1 : Utiliser un Ollama existant** (recommandé si Ollama est déjà installé)
@@ -80,8 +90,8 @@ Le script vous demandera si vous souhaitez utiliser Ollama dans un container ou 
 - Le modèle llama2 sera téléchargé automatiquement
 
 3. Accéder à l'application :
-- Frontend : http://localhost:3000
-- Backend API : http://localhost:8000
+- Frontend : http://localhost:3000 (ou le port configuré dans `.env`)
+- Backend API : http://localhost:8000 (ou le port configuré dans `.env`)
 - Documentation API : http://localhost:8000/docs
 
 ### Installation manuelle avec Ollama externe
@@ -178,6 +188,24 @@ npm run dev
 
 ## Configuration
 
+### Configuration des ports
+
+Tous les ports utilisés par l'application sont configurables via le fichier `.env` à la racine du projet :
+
+```bash
+# Port Configuration
+FRONTEND_PORT=3000      # Port pour l'interface web
+BACKEND_PORT=8000       # Port pour l'API backend
+OLLAMA_PORT=11434       # Port pour Ollama
+```
+
+**Pour changer les ports :**
+1. Éditez le fichier `.env` (créé automatiquement par `setup.sh`)
+2. Modifiez les valeurs selon vos besoins
+3. Relancez les services : `docker-compose down && docker-compose up -d` (ou avec podman-compose)
+
+Cette configuration est particulièrement utile si vous avez déjà des services qui utilisent les ports par défaut.
+
 ### Variables d'environnement (Backend)
 
 ```
@@ -232,8 +260,9 @@ podman-compose -f podman-compose.no-ollama.yml up -d
 
 3. Configurer le pare-feu (si nécessaire) :
 ```bash
-sudo firewall-cmd --add-port=3000/tcp --permanent
-sudo firewall-cmd --add-port=8000/tcp --permanent
+# Utilisez les ports configurés dans votre .env
+sudo firewall-cmd --add-port=3000/tcp --permanent  # ou votre FRONTEND_PORT
+sudo firewall-cmd --add-port=8000/tcp --permanent  # ou votre BACKEND_PORT
 sudo firewall-cmd --reload
 ```
 

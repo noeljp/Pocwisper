@@ -11,6 +11,12 @@ RUN npm install
 # Copy source code
 COPY . .
 
+# Accept build argument for API URL
+# Default matches the default BACKEND_PORT (8000) from .env.example
+# Note: If you change the default BACKEND_PORT in .env.example, update this default value too
+ARG VITE_API_URL=http://localhost:8000
+ENV VITE_API_URL=$VITE_API_URL
+
 # Build the app
 RUN npm run build
 
