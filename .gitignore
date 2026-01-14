@@ -28,5 +28,4 @@ Thumbs.db
 # Project specific
 backend/uploads/
 backend/pocwisper.db
-backend/models/
 docker-compose.override.yml
