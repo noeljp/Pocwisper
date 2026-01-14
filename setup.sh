@@ -75,7 +75,7 @@ if [ ! -f ".env" ]; then
             sed -i "s|OLLAMA_URL=.*|OLLAMA_URL=$OLLAMA_URL|" .env
             echo "✅ Configured to use external Ollama at $OLLAMA_URL"
         else
-            echo "✅ Configured to use external Ollama on localhost:11434"
+            echo "✅ Configured to use external Ollama on localhost:$OLLAMA_PORT"
         fi
     fi
     
