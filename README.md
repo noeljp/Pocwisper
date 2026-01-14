@@ -52,7 +52,7 @@ Pocwisper est une solution complète pour transcrire des réunions audio et gén
 - Python 3.11+
 - Node.js 18+
 - Docker ou Podman
-- Ollama installé localement (ou via container)
+- Ollama (installé localement ou via container)
 
 ### Installation avec Docker/Podman
 
@@ -62,29 +62,46 @@ git clone https://github.com/noeljp/Pocwisper.git
 cd Pocwisper
 ```
 
-2. Lancer avec Docker Compose :
+2. Lancer le script de configuration automatique :
 ```bash
-docker-compose up -d
+chmod +x setup.sh
+./setup.sh
 ```
 
-Ou avec Podman Compose (pour AlmaLinux 10) :
-```bash
-podman-compose up -d
-```
+Le script vous demandera si vous souhaitez utiliser Ollama dans un container ou une instance existante.
 
-3. Installer le modèle Ollama :
-```bash
-# Si Ollama est dans un container
-docker exec -it pocwisper-ollama ollama pull llama2
+**Option 1 : Utiliser un Ollama existant** (recommandé si Ollama est déjà installé)
+- Le script détectera automatiquement si Ollama est accessible sur localhost:11434
+- Si détecté, l'application utilisera cette instance
+- Assurez-vous que le modèle llama2 est disponible : `ollama pull llama2`
 
-# Ou si Ollama est local
-ollama pull llama2
-```
+**Option 2 : Utiliser Ollama dans un container**
+- Le script créera un container Ollama dédié
+- Le modèle llama2 sera téléchargé automatiquement
 
-4. Accéder à l'application :
+3. Accéder à l'application :
 - Frontend : http://localhost:3000
 - Backend API : http://localhost:8000
 - Documentation API : http://localhost:8000/docs
+
+### Installation manuelle avec Ollama externe
+
+Si vous avez déjà Ollama installé sur votre serveur (port 11434), utilisez les fichiers compose spécifiques :
+
+Avec Docker :
+```bash
+docker-compose -f docker-compose.no-ollama.yml up -d
+```
+
+Avec Podman :
+```bash
+podman-compose -f podman-compose.no-ollama.yml up -d
+```
+
+Assurez-vous que le modèle llama2 est disponible :
+```bash
+ollama pull llama2
+```
 
 ### Installation manuelle
 
@@ -173,11 +190,21 @@ UPLOAD_DIR=./uploads
 
 ### Configuration Ollama
 
-Assurez-vous qu'Ollama est en cours d'exécution et que le modèle llama2 est téléchargé :
+Pocwisper peut utiliser Ollama de deux manières :
 
+1. **Ollama externe** (recommandé si déjà installé sur le serveur) :
+   - Assurez-vous qu'Ollama est accessible sur le port 11434
+   - Le modèle llama2 doit être installé : `ollama pull llama2`
+   - Configurez `OLLAMA_URL` dans backend/.env : `OLLAMA_URL=http://localhost:11434`
+
+2. **Ollama en container** :
+   - Utilisez docker-compose.yml ou podman-compose.yml (sans le suffixe .no-ollama)
+   - Le container sera démarré automatiquement
+   - Le modèle sera téléchargé lors du premier démarrage
+
+Pour vérifier qu'Ollama fonctionne :
 ```bash
-ollama serve  # Lance le serveur Ollama
-ollama pull llama2  # Télécharge le modèle
+curl http://localhost:11434/api/tags
 ```
 
 ## Déploiement sur AlmaLinux 10
@@ -187,11 +214,18 @@ ollama pull llama2  # Télécharge le modèle
 sudo dnf install -y podman podman-compose
 ```
 
-2. Cloner et lancer l'application :
+2. Utiliser le script de déploiement automatique :
+```bash
+sudo ./infrastructure/deploy-almalinux.sh
+```
+
+Le script détectera automatiquement si Ollama est déjà installé sur le système.
+
+**Alternative manuelle** - Si Ollama est déjà installé localement :
 ```bash
 git clone https://github.com/noeljp/Pocwisper.git
 cd Pocwisper
-podman-compose up -d
+podman-compose -f podman-compose.no-ollama.yml up -d
 ```
 
 3. Configurer le pare-feu (si nécessaire) :

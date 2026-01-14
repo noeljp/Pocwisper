@@ -54,6 +54,31 @@ if [ ! -f ".env" ]; then
     sed -i "s/your-secret-key-change-this-in-production/$SECRET_KEY/" .env
     echo "✅ Generated secure SECRET_KEY"
 fi
+
+# Check if Ollama is already running
+echo ""
+echo "🔍 Checking for existing Ollama installation..."
+if curl -s http://localhost:11434/api/tags > /dev/null 2>&1; then
+    echo "✅ Ollama detected on localhost:11434"
+    USE_EXTERNAL_OLLAMA=true
+    sed -i "s|OLLAMA_URL=.*|OLLAMA_URL=http://localhost:11434|" .env
+else
+    echo "⚠️  No Ollama detected on localhost:11434"
+    read -p "Do you want to deploy Ollama in a container? (y/n) [y]: " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+        USE_EXTERNAL_OLLAMA=false
+    else
+        read -p "Enter the Ollama URL (e.g., http://localhost:11434): " OLLAMA_URL
+        if [ -z "$OLLAMA_URL" ]; then
+            OLLAMA_URL="http://localhost:11434"
+        fi
+        USE_EXTERNAL_OLLAMA=true
+        sed -i "s|OLLAMA_URL=.*|OLLAMA_URL=$OLLAMA_URL|" .env
+        echo "✅ Configured to use external Ollama at $OLLAMA_URL"
+    fi
+fi
+
 cd ..
 
 # Configure firewall
@@ -68,15 +93,29 @@ firewall-cmd --reload
 
 # Start services with Podman
 echo "🚀 Starting Pocwisper services..."
-podman-compose -f podman-compose.yml up -d
+if [ "$USE_EXTERNAL_OLLAMA" = true ]; then
+    echo "Using external Ollama, starting only backend and frontend..."
+    podman-compose -f podman-compose.no-ollama.yml up -d
+else
+    podman-compose -f podman-compose.yml up -d
+fi
 
 # Wait for services to be ready
 echo "⏳ Waiting for services to start..."
 sleep 10
 
-# Pull Ollama model
-echo "📥 Downloading Ollama model..."
-podman exec pocwisper-ollama ollama pull llama2
+# Pull Ollama model (only if using container Ollama)
+if [ "$USE_EXTERNAL_OLLAMA" = false ]; then
+    echo "📥 Downloading Ollama model..."
+    podman exec pocwisper-ollama ollama pull llama2
+else
+    echo "ℹ️  Using external Ollama. Verifying llama2 model..."
+    if curl -s ${OLLAMA_URL:-http://localhost:11434}/api/tags | grep -q "llama2"; then
+        echo "✅ llama2 model is available"
+    else
+        echo "⚠️  llama2 model not found. Please install it with: ollama pull llama2"
+    fi
+fi
 
 # Install systemd service
 echo "⚙️  Installing systemd service..."
