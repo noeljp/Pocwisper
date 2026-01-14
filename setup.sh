@@ -6,10 +6,23 @@ echo "🚀 Setting up Pocwisper..."
 
 # Load or create .env file
 if [ ! -f ".env" ]; then
-    echo "Creating .env file from .env.example..."
-    cp .env.example .env
-    echo "✅ Created .env file with default port configuration"
-    echo "ℹ️  You can edit .env to change ports if needed"
+    if [ -f ".env.example" ]; then
+        echo "Creating .env file from .env.example..."
+        cp .env.example .env
+        echo "✅ Created .env file with default port configuration"
+        echo "ℹ️  You can edit .env to change ports if needed"
+    else
+        echo "⚠️  .env.example not found. Creating .env with default values..."
+        cat > .env << 'EOF'
+# Port Configuration
+# Change these values if you have port conflicts with other services
+FRONTEND_PORT=3000
+BACKEND_PORT=8000
+OLLAMA_PORT=11434
+EOF
+        echo "✅ Created .env file with default port configuration"
+        echo "ℹ️  You can edit .env to change ports if needed"
+    fi
 fi
 
 # Load environment variables from .env safely
