@@ -18,6 +18,28 @@ else
     exit 1
 fi
 
+# Check if Ollama is already running on port 11434
+echo ""
+echo "🔍 Checking for existing Ollama installation..."
+if curl -s http://localhost:11434/api/tags > /dev/null 2>&1; then
+    echo "✅ Ollama detected on localhost:11434"
+    USE_EXTERNAL_OLLAMA=true
+else
+    echo "⚠️  No Ollama detected on localhost:11434"
+    read -p "Do you want to use a container for Ollama? (y/n) [y]: " -n 1 -r
+    echo
+    if [[ ! $REPLY =~ ^[Nn]$ ]]; then
+        USE_EXTERNAL_OLLAMA=false
+    else
+        read -p "Enter the Ollama URL (e.g., http://localhost:11434): " OLLAMA_URL
+        if [ -z "$OLLAMA_URL" ]; then
+            OLLAMA_URL="http://localhost:11434"
+        fi
+        USE_EXTERNAL_OLLAMA=true
+        echo "Using external Ollama at: $OLLAMA_URL"
+    fi
+fi
+
 # Setup backend
 echo ""
 echo "📦 Setting up backend..."
@@ -26,6 +48,17 @@ cd backend
 if [ ! -f ".env" ]; then
     echo "Creating .env file from example..."
     cp .env.example .env
+    
+    # Update OLLAMA_URL in .env if using external Ollama
+    if [ "$USE_EXTERNAL_OLLAMA" = true ]; then
+        if [ -n "$OLLAMA_URL" ]; then
+            sed -i "s|OLLAMA_URL=.*|OLLAMA_URL=$OLLAMA_URL|" .env
+            echo "✅ Configured to use external Ollama at $OLLAMA_URL"
+        else
+            echo "✅ Configured to use external Ollama on localhost:11434"
+        fi
+    fi
+    
     echo "⚠️  Please edit backend/.env to configure your settings"
 fi
 
@@ -43,32 +76,56 @@ fi
 
 cd ..
 
-# Pull Ollama image and setup
-echo ""
-echo "🤖 Setting up Ollama..."
-$CONTAINER_CMD pull ollama/ollama:latest
+# Pull Ollama image and setup (only if not using external Ollama)
+if [ "$USE_EXTERNAL_OLLAMA" = false ]; then
+    echo ""
+    echo "🤖 Setting up Ollama container..."
+    $CONTAINER_CMD pull ollama/ollama:latest
+fi
 
 # Start services
 echo ""
 echo "🚀 Starting services with $COMPOSE_CMD..."
-if [ "$CONTAINER_CMD" = "podman" ]; then
-    $COMPOSE_CMD -f podman-compose.yml up -d
+if [ "$USE_EXTERNAL_OLLAMA" = true ]; then
+    # Use the no-ollama compose file
+    if [ "$CONTAINER_CMD" = "podman" ]; then
+        $COMPOSE_CMD -f podman-compose.no-ollama.yml up -d
+    else
+        $COMPOSE_CMD -f docker-compose.no-ollama.yml up -d
+    fi
 else
-    $COMPOSE_CMD up -d
+    if [ "$CONTAINER_CMD" = "podman" ]; then
+        $COMPOSE_CMD -f podman-compose.yml up -d
+    else
+        $COMPOSE_CMD up -d
+    fi
 fi
 
-# Wait for Ollama to be ready
-echo ""
-echo "⏳ Waiting for Ollama to be ready..."
-sleep 10
-
-# Pull Ollama model
-echo ""
-echo "📥 Downloading Ollama llama2 model (this may take a while)..."
-if ! $CONTAINER_CMD exec pocwisper-ollama ollama pull llama2; then
-    echo "⚠️  Failed to download Ollama model. The container may not be ready yet."
-    echo "    You can manually run this command later:"
-    echo "    $CONTAINER_CMD exec pocwisper-ollama ollama pull llama2"
+# Wait for Ollama to be ready and pull model (only if using container Ollama)
+if [ "$USE_EXTERNAL_OLLAMA" = false ]; then
+    echo ""
+    echo "⏳ Waiting for Ollama container to be ready..."
+    sleep 10
+    
+    # Pull Ollama model
+    echo ""
+    echo "📥 Downloading Ollama llama2 model (this may take a while)..."
+    if ! $CONTAINER_CMD exec pocwisper-ollama ollama pull llama2; then
+        echo "⚠️  Failed to download Ollama model. The container may not be ready yet."
+        echo "    You can manually run this command later:"
+        echo "    $CONTAINER_CMD exec pocwisper-ollama ollama pull llama2"
+    fi
+else
+    echo ""
+    echo "ℹ️  Using external Ollama. Make sure llama2 model is available:"
+    echo "    ollama pull llama2"
+    echo ""
+    echo "🔍 Checking if llama2 model is available..."
+    if curl -s ${OLLAMA_URL:-http://localhost:11434}/api/tags | grep -q "llama2"; then
+        echo "✅ llama2 model is available"
+    else
+        echo "⚠️  llama2 model not found. Please install it with: ollama pull llama2"
+    fi
 fi
 
 echo ""

@@ -5,7 +5,8 @@
 ### Prerequisites
 - Docker or Podman installed
 - At least 8GB of RAM available
-- ~10GB of disk space for models
+- ~10GB of disk space for models (if installing Ollama in container)
+- **OR** Ollama already installed on your server on port 11434
 
 ### Steps
 
@@ -22,10 +23,18 @@ chmod +x setup.sh
 ```
 
 This script will:
+- Detect if Ollama is already running on localhost:11434
+- Ask if you want to use container Ollama or external Ollama
 - Set up the backend environment
 - Install frontend dependencies
-- Start all services (backend, frontend, Ollama)
-- Download the Ollama llama2 model
+- Start services (backend, frontend, and optionally Ollama)
+- Download the Ollama llama2 model (if using container Ollama)
+
+**If you have Ollama on port 11434:**
+The script will detect it and skip the Ollama container setup.
+
+**If you don't have Ollama:**
+The script will offer to run Ollama in a container.
 
 3. **Access the application:**
 - Frontend: http://localhost:3000
@@ -33,6 +42,23 @@ This script will:
 - API Documentation: http://localhost:8000/docs
 
 4. **Create your account and start transcribing!**
+
+### Manual Setup with External Ollama
+
+If you already have Ollama running on your server (port 11434):
+
+```bash
+# With Docker
+docker-compose -f docker-compose.no-ollama.yml up -d
+
+# With Podman  
+podman-compose -f podman-compose.no-ollama.yml up -d
+```
+
+Make sure llama2 model is installed:
+```bash
+ollama pull llama2
+```
 
 ## Option 2: Manual Development Setup
 
@@ -140,12 +166,21 @@ npm run dev
 # Check if Ollama is running
 curl http://localhost:11434/api/tags
 
-# If not running, start it
+# If using external Ollama and not running, start it
 ollama serve
 
-# Or restart the container
+# If using container Ollama and not running, restart the container
 docker restart pocwisper-ollama
+# or
+podman restart pocwisper-ollama
 ```
+
+### Backend can't connect to Ollama
+- Check that Ollama is accessible on the configured port
+- Verify `OLLAMA_URL` in backend/.env matches your setup
+  - For external Ollama: `OLLAMA_URL=http://localhost:11434`
+  - For container Ollama with Docker: `OLLAMA_URL=http://ollama:11434`
+- Check container networking if using Docker/Podman
 
 ### Frontend can't connect to backend
 - Check backend is running on port 8000
