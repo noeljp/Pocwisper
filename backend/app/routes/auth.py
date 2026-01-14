@@ -8,6 +8,7 @@ from app.utils.auth import (
     get_password_hash,
     verify_password,
     create_access_token,
+    get_current_user,
     get_db
 )
 from app.config import get_settings
@@ -67,7 +68,5 @@ def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depend
 
 
 @router.get("/me", response_model=UserResponse)
-async def get_current_user_info(current_user: User = Depends(get_db)):
-    from app.utils.auth import get_current_user
-    user = await get_current_user(db=current_user)
-    return user
+async def get_current_user_info(current_user: User = Depends(get_current_user)):
+    return current_user
