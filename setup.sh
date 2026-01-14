@@ -17,8 +17,8 @@ if [ ! -f ".env" ]; then
         cat > .env << 'EOF'
 # Port Configuration
 # Change these values if you have port conflicts with other services
-FRONTEND_PORT=3000
-BACKEND_PORT=8000
+FRONTEND_PORT=3010
+BACKEND_PORT=8010
 OLLAMA_PORT=11434
 EOF
         echo "✅ Created .env file with default port configuration"
@@ -34,8 +34,8 @@ if [ -f ".env" ]; then
 fi
 
 # Set default values if not set
-FRONTEND_PORT=${FRONTEND_PORT:-3000}
-BACKEND_PORT=${BACKEND_PORT:-8000}
+FRONTEND_PORT=${FRONTEND_PORT:-3010}
+BACKEND_PORT=${BACKEND_PORT:-8010}
 OLLAMA_PORT=${OLLAMA_PORT:-11434}
 
 # Check if Docker/Podman is available

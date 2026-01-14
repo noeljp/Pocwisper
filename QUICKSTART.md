@@ -37,9 +37,9 @@ The script will detect it and skip the Ollama container setup.
 The script will offer to run Ollama in a container.
 
 3. **Access the application:**
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8000
-- API Documentation: http://localhost:8000/docs
+- Frontend: http://localhost:3010
+- Backend API: http://localhost:8010
+- API Documentation: http://localhost:8010/docs
 
 4. **Create your account and start transcribing!**
 
@@ -97,7 +97,7 @@ ollama pull llama2
 
 6. **Start the backend:**
 ```bash
-python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8010
 ```
 
 ### Frontend
@@ -117,12 +117,12 @@ npm install
 npm run dev
 ```
 
-4. **Access the application at http://localhost:3000**
+4. **Access the application at http://localhost:3010**
 
 ## First Time Usage
 
 1. **Register an account:**
-   - Go to http://localhost:3000
+   - Go to http://localhost:3010
    - Click "Créer un compte"
    - Fill in username, email, and password
    - Click "S'inscrire"
@@ -183,7 +183,7 @@ podman restart pocwisper-ollama
 - Check container networking if using Docker/Podman
 
 ### Frontend can't connect to backend
-- Check backend is running on port 8000
+- Check backend is running on port 8010
 - Check CORS settings in backend/app/main.py
 - Verify API URL in frontend/src/services/api.js
 
@@ -211,6 +211,6 @@ rm pocwisper.db
 ## Next Steps
 
 - Check the full README.md for detailed documentation
-- Explore the API documentation at http://localhost:8000/docs
+- Explore the API documentation at http://localhost:8010/docs
 - Customize the Ollama prompt in backend/app/services/ollama_service.py
 - Adjust the UI styling in frontend/src/App.css

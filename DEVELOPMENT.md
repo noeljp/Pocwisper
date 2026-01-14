@@ -62,12 +62,12 @@ cp .env.example .env
 
 3. **Run development server with auto-reload:**
 ```bash
-python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8010
 ```
 
 4. **Access API documentation:**
-   - Swagger UI: http://localhost:8000/docs
-   - ReDoc: http://localhost:8000/redoc
+   - Swagger UI: http://localhost:8010/docs
+   - ReDoc: http://localhost:8010/redoc
 
 ### Frontend Development
 
@@ -83,7 +83,7 @@ npm run dev
 ```
 
 3. **Access frontend:**
-   - http://localhost:3000
+   - http://localhost:3010
 
 ### Database
 
