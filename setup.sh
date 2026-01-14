@@ -13,6 +13,7 @@ if [ ! -f ".env" ]; then
         echo "ℹ️  You can edit .env to change ports if needed"
     else
         echo "⚠️  .env.example not found. Creating .env with default values..."
+        # Note: These defaults must match .env.example for consistency
         cat > .env << 'EOF'
 # Port Configuration
 # Change these values if you have port conflicts with other services
