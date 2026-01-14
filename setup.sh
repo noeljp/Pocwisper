@@ -12,9 +12,11 @@ if [ ! -f ".env" ]; then
     echo "ℹ️  You can edit .env to change ports if needed"
 fi
 
-# Load environment variables from .env
+# Load environment variables from .env safely
 if [ -f ".env" ]; then
-    export $(grep -v '^#' .env | xargs)
+    set -o allexport
+    source .env
+    set +o allexport
 fi
 
 # Set default values if not set
