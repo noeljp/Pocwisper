@@ -103,6 +103,8 @@ Assurez-vous que le modèle llama2 est disponible :
 ollama pull llama2
 ```
 
+> **Pour plus de détails sur la configuration d'Ollama, consultez [OLLAMA_CONFIG.md](OLLAMA_CONFIG.md)**
+
 ### Installation manuelle
 
 #### Backend

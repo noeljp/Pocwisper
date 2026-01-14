@@ -12,7 +12,7 @@ services:
       - SECRET_KEY=change-this-in-production-to-a-secure-random-key
       - DATABASE_URL=sqlite:///./pocwisper.db
       - WHISPER_MODEL=openai/whisper-base
-      - OLLAMA_URL=http://host.containers.internal:11434
+      - OLLAMA_URL=http://10.0.2.2:11434
       - UPLOAD_DIR=/app/uploads
     volumes:
       - ./backend/uploads:/app/uploads
