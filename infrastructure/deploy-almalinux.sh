@@ -26,16 +26,20 @@ echo "📁 Creating application directory at $APP_DIR..."
 mkdir -p $APP_DIR
 cd $APP_DIR
 
+# Default repository URL (can be overridden by environment variable)
+REPO_URL="${POCWISPER_REPO_URL:-https://github.com/noeljp/Pocwisper.git}"
+
 # Clone or update repository
 if [ -d ".git" ]; then
     echo "📥 Updating existing repository..."
     git pull
 else
-    echo "📥 Cloning repository..."
+    echo "📥 Cloning repository from $REPO_URL..."
     # Try HTTPS first, fall back to user instruction if it fails
-    if ! git clone https://github.com/noeljp/Pocwisper.git .; then
-        echo "⚠️  HTTPS clone failed. Please clone manually using SSH or provide credentials:"
+    if ! git clone "$REPO_URL" .; then
+        echo "⚠️  Clone failed. Please clone manually using SSH or provide credentials:"
         echo "    git clone git@github.com:noeljp/Pocwisper.git $APP_DIR"
+        echo "    or set POCWISPER_REPO_URL environment variable to use a different repository URL"
         exit 1
     fi
 fi

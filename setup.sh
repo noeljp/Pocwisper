@@ -65,7 +65,11 @@ sleep 10
 # Pull Ollama model
 echo ""
 echo "📥 Downloading Ollama llama2 model (this may take a while)..."
-$CONTAINER_CMD exec pocwisper-ollama ollama pull llama2
+if ! $CONTAINER_CMD exec pocwisper-ollama ollama pull llama2; then
+    echo "⚠️  Failed to download Ollama model. The container may not be ready yet."
+    echo "    You can manually run this command later:"
+    echo "    $CONTAINER_CMD exec pocwisper-ollama ollama pull llama2"
+fi
 
 echo ""
 echo "✅ Setup complete!"

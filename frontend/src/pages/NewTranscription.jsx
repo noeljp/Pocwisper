@@ -84,7 +84,7 @@ const NewTranscription = () => {
             <textarea
               value={initialPrompt}
               onChange={(e) => setInitialPrompt(e.target.value)}
-              placeholder="Ajoutez ici les acronymes, termes techniques et contexte métier pour améliorer la transcription.&#10;&#10;Exemple:&#10;- API: Application Programming Interface&#10;- POC: Proof of Concept&#10;- Sprint: période de développement de 2 semaines&#10;- Équipe composée de: Jean (développeur), Marie (designer), Paul (chef de projet)"
+              placeholder={`Ajoutez ici les acronymes, termes techniques et contexte métier pour améliorer la transcription.\n\nExemple:\n- API: Application Programming Interface\n- POC: Proof of Concept\n- Sprint: période de développement de 2 semaines\n- Équipe composée de: Jean (développeur), Marie (designer), Paul (chef de projet)`}
               rows="8"
             />
           </div>

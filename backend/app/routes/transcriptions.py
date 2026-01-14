@@ -4,6 +4,8 @@ from typing import List
 from datetime import datetime
 import os
 import shutil
+import uuid
+from pathlib import Path
 from app.models.database import User, Transcription
 from app.models.schemas import TranscriptionCreate, TranscriptionResponse
 from app.utils.auth import get_current_user, get_db
@@ -39,8 +41,15 @@ async def create_transcription(
     user_upload_dir = os.path.join(settings.UPLOAD_DIR, "audio", str(current_user.id))
     os.makedirs(user_upload_dir, exist_ok=True)
     
-    # Save audio file
-    audio_filename = f"{datetime.now().timestamp()}_{audio_file.filename}"
+    # Save audio file with sanitized filename
+    # Use UUID for security and add original extension
+    file_ext = Path(audio_file.filename).suffix.lower()
+    # Validate file extension to prevent path traversal
+    allowed_extensions = {'.mp3', '.wav', '.m4a', '.ogg', '.flac', '.aac', '.wma'}
+    if file_ext not in allowed_extensions:
+        file_ext = '.audio'  # Default extension if unknown
+    
+    audio_filename = f"{uuid.uuid4()}{file_ext}"
     audio_path = os.path.join(user_upload_dir, audio_filename)
     
     with open(audio_path, "wb") as buffer:

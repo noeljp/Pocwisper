@@ -1,7 +1,9 @@
 import httpx
+import logging
 from app.config import get_settings
 
 settings = get_settings()
+logger = logging.getLogger(__name__)
 
 
 class OllamaService:
@@ -25,8 +27,17 @@ class OllamaService:
                 response.raise_for_status()
                 result = response.json()
                 return result.get("response", "")
-            except httpx.HTTPError as e:
-                print(f"Error calling Ollama: {e}")
+            except httpx.TimeoutException:
+                logger.error("Ollama request timed out")
+                return ""
+            except httpx.HTTPStatusError as e:
+                logger.error(f"Ollama HTTP error: {e.response.status_code} - {e.response.text}")
+                return ""
+            except httpx.RequestError as e:
+                logger.error(f"Ollama connection error: {str(e)}")
+                return ""
+            except Exception as e:
+                logger.error(f"Unexpected error calling Ollama: {str(e)}")
                 return ""
 
     async def process_transcription(self, transcription: str, initial_prompt: str = "") -> str:
