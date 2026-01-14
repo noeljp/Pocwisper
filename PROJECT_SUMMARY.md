@@ -86,7 +86,7 @@ Pocwisper is a complete web application for transcribing audio recordings of mee
 ## Technology Stack
 
 ### Backend
-- **Framework:** FastAPI 0.104.1
+- **Framework:** FastAPI 0.115.5
 - **Database:** SQLite + SQLAlchemy
 - **Authentication:** JWT with python-jose
 - **AI/ML:**

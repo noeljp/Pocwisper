@@ -152,11 +152,11 @@ This document verifies that all requirements from the problem statement have bee
 
 ### Backend
 - Python 3.11+
-- FastAPI 0.104.1
-- SQLAlchemy 2.0.23
-- Transformers 4.35.2 (Hugging Face)
-- PyTorch 2.1.1
-- python-docx 1.1.0
+- FastAPI 0.115.5
+- SQLAlchemy 2.0.36
+- Transformers 4.48.0 (Hugging Face)
+- PyTorch 2.6.0
+- python-docx 1.1.2
 - Ollama integration
 
 ### Frontend
