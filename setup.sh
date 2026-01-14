@@ -4,6 +4,24 @@
 
 echo "🚀 Setting up Pocwisper..."
 
+# Load or create .env file
+if [ ! -f ".env" ]; then
+    echo "Creating .env file from .env.example..."
+    cp .env.example .env
+    echo "✅ Created .env file with default port configuration"
+    echo "ℹ️  You can edit .env to change ports if needed"
+fi
+
+# Load environment variables from .env
+if [ -f ".env" ]; then
+    export $(grep -v '^#' .env | xargs)
+fi
+
+# Set default values if not set
+FRONTEND_PORT=${FRONTEND_PORT:-3000}
+BACKEND_PORT=${BACKEND_PORT:-8000}
+OLLAMA_PORT=${OLLAMA_PORT:-11434}
+
 # Check if Docker/Podman is available
 if command -v podman &> /dev/null; then
     CONTAINER_CMD="podman"
@@ -18,22 +36,22 @@ else
     exit 1
 fi
 
-# Check if Ollama is already running on port 11434
+# Check if Ollama is already running on configured port
 echo ""
 echo "🔍 Checking for existing Ollama installation..."
-if curl -s http://localhost:11434/api/tags > /dev/null 2>&1; then
-    echo "✅ Ollama detected on localhost:11434"
+if curl -s http://localhost:$OLLAMA_PORT/api/tags > /dev/null 2>&1; then
+    echo "✅ Ollama detected on localhost:$OLLAMA_PORT"
     USE_EXTERNAL_OLLAMA=true
 else
-    echo "⚠️  No Ollama detected on localhost:11434"
+    echo "⚠️  No Ollama detected on localhost:$OLLAMA_PORT"
     read -p "Do you want to use a container for Ollama? (y/n) [y]: " -n 1 -r
     echo
     if [[ ! $REPLY =~ ^[Nn]$ ]]; then
         USE_EXTERNAL_OLLAMA=false
     else
-        read -p "Enter the Ollama URL (e.g., http://localhost:11434): " OLLAMA_URL
+        read -p "Enter the Ollama URL (e.g., http://localhost:$OLLAMA_PORT): " OLLAMA_URL
         if [ -z "$OLLAMA_URL" ]; then
-            OLLAMA_URL="http://localhost:11434"
+            OLLAMA_URL="http://localhost:$OLLAMA_PORT"
         fi
         USE_EXTERNAL_OLLAMA=true
         echo "Using external Ollama at: $OLLAMA_URL"
@@ -121,7 +139,7 @@ else
     echo "    ollama pull llama2"
     echo ""
     echo "🔍 Checking if llama2 model is available..."
-    if curl -s ${OLLAMA_URL:-http://localhost:11434}/api/tags | grep -q "llama2"; then
+    if curl -s ${OLLAMA_URL:-http://localhost:$OLLAMA_PORT}/api/tags | grep -q "llama2"; then
         echo "✅ llama2 model is available"
     else
         echo "⚠️  llama2 model not found. Please install it with: ollama pull llama2"
@@ -132,10 +150,10 @@ echo ""
 echo "✅ Setup complete!"
 echo ""
 echo "🌐 Application URLs:"
-echo "   Frontend: http://localhost:3000"
-echo "   Backend API: http://localhost:8000"
-echo "   API Docs: http://localhost:8000/docs"
+echo "   Frontend: http://localhost:$FRONTEND_PORT"
+echo "   Backend API: http://localhost:$BACKEND_PORT"
+echo "   API Docs: http://localhost:$BACKEND_PORT/docs"
 echo ""
 echo "📝 Next steps:"
-echo "   1. Create an account at http://localhost:3000"
+echo "   1. Create an account at http://localhost:$FRONTEND_PORT"
 echo "   2. Upload an audio file and start transcribing!"
