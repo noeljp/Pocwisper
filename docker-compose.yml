@@ -1,0 +1,52 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: pocwisper-backend
+    ports:
+      - "8000:8000"
+    environment:
+      - SECRET_KEY=change-this-in-production-to-a-secure-random-key
+      - DATABASE_URL=sqlite:///./pocwisper.db
+      - WHISPER_MODEL=openai/whisper-base
+      - OLLAMA_URL=http://ollama:11434
+      - UPLOAD_DIR=/app/uploads
+    volumes:
+      - ./backend/uploads:/app/uploads
+      - ./backend/pocwisper.db:/app/pocwisper.db
+    depends_on:
+      - ollama
+    networks:
+      - pocwisper-network
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: pocwisper-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - pocwisper-network
+
+  ollama:
+    image: ollama/ollama:latest
+    container_name: pocwisper-ollama
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama-data:/root/.ollama
+    networks:
+      - pocwisper-network
+
+networks:
+  pocwisper-network:
+    driver: bridge
+
+volumes:
+  ollama-data:
