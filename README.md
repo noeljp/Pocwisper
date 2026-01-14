@@ -1,6 +1,13 @@
 # Pocwisper
 
+[![Security Status](https://img.shields.io/badge/security-all%20vulnerabilities%20fixed-brightgreen)](SECURITY.md)
+[![Python](https://img.shields.io/badge/python-3.11+-blue.svg)](https://www.python.org/)
+[![React](https://img.shields.io/badge/react-18.2-blue.svg)](https://reactjs.org/)
+[![FastAPI](https://img.shields.io/badge/fastapi-0.115.5-green.svg)](https://fastapi.tiangolo.com/)
+
 Application web de transcription de réunions audio avec traitement intelligent par LLM.
+
+> **Note:** All security vulnerabilities have been addressed. See [SECURITY.md](SECURITY.md) for details.
 
 ## Description
 
