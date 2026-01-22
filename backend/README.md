@@ -33,12 +33,12 @@ ollama serve
 ## Démarrage
 
 ```bash
-python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8010
 ```
 
-L'API sera disponible sur http://localhost:8000
+L'API sera disponible sur http://localhost:8010
 
-Documentation interactive : http://localhost:8000/docs
+Documentation interactive : http://localhost:8010/docs
 
 ## Endpoints
 

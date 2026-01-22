@@ -172,9 +172,9 @@ sudo ./infrastructure/deploy-almalinux.sh
 See QUICKSTART.md or DEVELOPMENT.md
 
 ## URLs (Default Configuration)
-- Frontend: http://localhost:3000
-- Backend API: http://localhost:8000
-- API Documentation: http://localhost:8000/docs
+- Frontend: http://localhost:3010
+- Backend API: http://localhost:8010
+- API Documentation: http://localhost:8010/docs
 - Ollama: http://localhost:11434
 
 ## File Structure

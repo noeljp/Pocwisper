@@ -68,7 +68,7 @@ chmod +x setup.sh
 ./setup.sh
 ```
 
-Le script créera automatiquement un fichier `.env` avec les ports par défaut (Frontend: 3000, Backend: 8000, Ollama: 11434).
+Le script créera automatiquement un fichier `.env` avec les ports par défaut (Frontend: 3010, Backend: 8010, Ollama: 11434).
 
 **Pour personnaliser les ports :** Éditez le fichier `.env` avant de lancer le script ou après l'installation :
 ```bash
@@ -90,9 +90,9 @@ Le script vous demandera si vous souhaitez utiliser Ollama dans un container ou 
 - Le modèle llama2 sera téléchargé automatiquement
 
 3. Accéder à l'application :
-- Frontend : http://localhost:3000 (ou le port configuré dans `.env`)
-- Backend API : http://localhost:8000 (ou le port configuré dans `.env`)
-- Documentation API : http://localhost:8000/docs
+- Frontend : http://localhost:3010 (ou le port configuré dans `.env`)
+- Backend API : http://localhost:8010 (ou le port configuré dans `.env`)
+- Documentation API : http://localhost:8010/docs
 
 ### Installation manuelle avec Ollama externe
 
@@ -127,7 +127,7 @@ source venv/bin/activate  # Linux/Mac
 pip install -r requirements.txt
 cp .env.example .env
 # Éditer .env avec vos configurations
-python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+python -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8010
 ```
 
 #### Frontend
@@ -194,8 +194,8 @@ Tous les ports utilisés par l'application sont configurables via le fichier `.e
 
 ```bash
 # Port Configuration
-FRONTEND_PORT=3000      # Port pour l'interface web
-BACKEND_PORT=8000       # Port pour l'API backend
+FRONTEND_PORT=3010      # Port pour l'interface web
+BACKEND_PORT=8010       # Port pour l'API backend
 OLLAMA_PORT=11434       # Port pour Ollama
 ```
 
@@ -261,8 +261,8 @@ podman-compose -f podman-compose.no-ollama.yml up -d
 3. Configurer le pare-feu (si nécessaire) :
 ```bash
 # Utilisez les ports configurés dans votre .env
-sudo firewall-cmd --add-port=3000/tcp --permanent  # ou votre FRONTEND_PORT
-sudo firewall-cmd --add-port=8000/tcp --permanent  # ou votre BACKEND_PORT
+sudo firewall-cmd --add-port=3010/tcp --permanent  # ou votre FRONTEND_PORT
+sudo firewall-cmd --add-port=8010/tcp --permanent  # ou votre BACKEND_PORT
 sudo firewall-cmd --reload
 ```
 
@@ -310,7 +310,7 @@ Pocwisper/
 - `GET /transcriptions/{id}/download` - Télécharger le DOCX
 - `DELETE /transcriptions/{id}` - Supprimer une transcription
 
-Documentation complète : http://localhost:8000/docs
+Documentation complète : http://localhost:8010/docs
 
 ## Licence
 
